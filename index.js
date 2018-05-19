@@ -11,12 +11,17 @@ class Subsume {
 		if (ids && typeof ids[Symbol.iterator] !== 'function') {
 			throw new Error('ids is supposed to be an iterable');
 		}
-		const data = [];
+		const data = {data: new Map(), rest: str}; 
 
 		const idList = ids ? ids : Subsume.extractIDs(str);
 
 		idList.forEach(id => {
-			data[id] = Subsume.parse(str, id);
+			if(data.data.get(id)){
+				throw new Error("IDs aren't supposed to be repeated at the same level in a string");
+			}
+			let res = Subsume.parse(data.rest, id);
+			data.data.set(id, res.data);
+			data.rest = res.rest;
 		});
 
 		return data;
