@@ -9,27 +9,38 @@ class Subsume {
 
 	static parseAll(str, ids) {
 		if (ids && typeof ids[Symbol.iterator] !== 'function') {
-			throw new Error('ids is supposed to be an iterable');
+			throw new Error('IDs is supposed to be an iterable');
 		}
-		const data = {data: new Map(), rest: str}; 
-
+		const result = {data: new Map(), rest: str};
 		const idList = ids ? ids : Subsume.extractIDs(str);
 
-		idList.forEach(id => {
-			if(data.data.get(id)){
-				throw new Error("IDs aren't supposed to be repeated at the same level in a string");
+		if (!ids) {
+			try {
+				Subsume.checkIntegrity(str);
+			} catch (err) {
+				throw new Error('Could not parse because the string\'s integrity is compromised: ' + err);
 			}
-			let res = Subsume.parse(data.rest, id);
-			data.data.set(id, res.data);
-			data.rest = res.rest;
+		}
+
+		idList.forEach(id => {
+			if (result.data.get(id)) {
+				throw new Error('IDs aren\'t supposed to be repeated at the same level in a string');
+			}
+			const res = Subsume.parse(result.rest, id);
+			result.data.set(id, res.data);
+			result.rest = res.rest;
 		});
 
-		return data;
+		return result;
 	}
 
 	static extractIDs(str) {
-		// Ideally the regex would be '@@\[(.{32})]@@(.*?)##\[\1\]##', but strict mode doesn't allow for octal escape sequences
-		const idRegex = new RegExp('@@\\[(.{32})\\]@@.*?##\\[(.{32})\\]##', 'g');
+		try {
+			Subsume.checkIntegrity(str);
+		} catch (err) {
+			throw new Error('Could not extract IDs because the string\'s integrity is compromised: ' + err);
+		}
+		const idRegex = new RegExp('@@\\[(.{32})\\]@@.*##\\[(\\1)\\]##', 'g');
 		const idList = [];
 		let match;
 
@@ -39,8 +50,38 @@ class Subsume {
 				idList.push(match[1]);
 			}
 		} while (match);
-
 		return idList;
+	}
+
+	static checkIntegrity(str) {
+		const delimiterRegex = new RegExp('([#|@])(?:\\1)\\[(.{32})\\](?:\\1){2}', 'g');
+		const ids = {};
+		const idStack = [];
+		let match;
+
+		do {
+			match = delimiterRegex.exec(str);
+			if (match) {
+				if (match[1] === '@') {
+					let arr = ids;
+					idStack.forEach(el => {
+						arr = arr[el];
+					});
+					if (arr[match[2]]) {
+						throw new Error('There\'re duplicate IDs in the same scope.');
+					}
+					arr[match[2]] = {};
+					idStack.push(match[2]);
+				} else {
+					idStack.pop();
+				}
+			}
+		} while (match);
+
+		if (idStack.length !== 0) {
+			throw new Error('There is a mismatch between prefixes and suffixes');
+		}
+		return ids;
 	}
 
 	constructor(id) {
@@ -59,6 +100,11 @@ class Subsume {
 	}
 
 	parse(str) {
+		try {
+			Subsume.checkIntegrity(str);
+		} catch (err) {
+			throw new Error('Could not extract IDs because the string\'s integrity is compromised: ' + err);
+		}
 		const ret = {};
 
 		ret.rest = str.replace(this.regex, (m, p1) => {
