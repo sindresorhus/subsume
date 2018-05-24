@@ -8,39 +8,39 @@ class Subsume {
 	}
 
 	static parseAll(str, ids) {
-		if (ids && typeof ids[Symbol.iterator] !== 'function') {
-			throw new Error('IDs is supposed to be an iterable');
+		if (ids && ids.constructor !== Array) {
+			throw new TypeError('IDs is supposed to be an array');
 		}
 		const result = {data: new Map(), rest: str};
-		const idList = ids ? ids : Subsume.extractIDs(str);
+		const idList = ids ? ids : Subsume._extractIDs(str);
 
 		if (!ids) {
 			try {
-				Subsume.checkIntegrity(str);
+				Subsume._checkIntegrity(str);
 			} catch (err) {
-				throw new Error('Could not parse because the string\'s integrity is compromised: ' + err);
+				throw new Error(`Could not parse because the string's integrity is compromised: ${err.message}`);
 			}
 		}
 
-		idList.forEach(id => {
+		for (const id of idList) {
 			if (result.data.get(id)) {
 				throw new Error('IDs aren\'t supposed to be repeated at the same level in a string');
 			}
 			const res = Subsume.parse(result.rest, id);
 			result.data.set(id, res.data);
 			result.rest = res.rest;
-		});
+		}
 
 		return result;
 	}
 
-	static extractIDs(str) {
+	static _extractIDs(str) {
 		try {
-			Subsume.checkIntegrity(str);
+			Subsume._checkIntegrity(str);
 		} catch (err) {
-			throw new Error('Could not extract IDs because the string\'s integrity is compromised: ' + err);
+			throw new Error(`Could not extract IDs because the string's integrity is compromised: ${err.message}`);
 		}
-		const idRegex = new RegExp('@@\\[(.{32})\\]@@.*##\\[(\\1)\\]##', 'g');
+		const idRegex = /@@\[(.{32})\]@@.*##\[(\1)\]##/g;
 		const idList = [];
 		let match;
 
@@ -53,25 +53,26 @@ class Subsume {
 		return idList;
 	}
 
-	static checkIntegrity(str) {
-		const delimiterRegex = new RegExp('([#|@])(?:\\1)\\[(.{32})\\](?:\\1){2}', 'g');
-		const ids = {};
+	static _checkIntegrity(str) {
+		const delimiterRegex = /([#|@])(?:\1)\[(.{32})\](?:\1){2}/g;
+		const ids = new Map();
 		const idStack = [];
 		let match;
 
 		do {
 			match = delimiterRegex.exec(str);
 			if (match) {
-				if (match[1] === '@') {
-					let arr = ids;
-					idStack.forEach(el => {
-						arr = arr[el];
-					});
-					if (arr[match[2]]) {
-						throw new Error('There\'re duplicate IDs in the same scope.');
+				const [, embedToken, id] = match;
+				if (embedToken === '@') {
+					let map = ids;
+					for (const el of idStack) {
+						map = map.get(el);
 					}
-					arr[match[2]] = {};
-					idStack.push(match[2]);
+					if (map.get(id)) {
+						throw new Error('There are duplicate IDs in the same scope.');
+					}
+					map.set(id, new Map());
+					idStack.push(id);
 				} else {
 					idStack.pop();
 				}
@@ -101,9 +102,9 @@ class Subsume {
 
 	parse(str) {
 		try {
-			Subsume.checkIntegrity(str);
+			Subsume._checkIntegrity(str);
 		} catch (err) {
-			throw new Error('Could not extract IDs because the string\'s integrity is compromised: ' + err);
+			throw new Error(`Could not extract IDs because the string's integrity is compromised: ${err.message}`);
 		}
 		const ret = {};
 
