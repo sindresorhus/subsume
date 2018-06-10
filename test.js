@@ -45,7 +45,7 @@ test('Subsume#parse()', t => {
 	});
 });
 
-test('Subsume#checkIntegrity()', t => {
+test('Subsume#_checkIntegrity()', t => {
 	const fixture1 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random text';
 	const fixture2 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]####[7febcd0b3806fbc48c01d7cea4ed1219]## random text';
 	const fixture3 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random @@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]##text';
@@ -63,7 +63,7 @@ test('Subsume#checkIntegrity()', t => {
 	t.throws(() => Subsume._checkIntegrity(fixture4));
 });
 
-test('Subsume#extractIDs()', t => {
+test('Subsume#_extractIDs()', t => {
 	const fixture = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]####[7febcd0b3806fbc48c01d7cea4ed1219]## random@@[7febcd0b3806fbc48c01d7cea4ed1218]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1218]## text@@[7febcd0b3806fbc48c01d7cea4ed1217]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1217]##';
 	t.deepEqual(Subsume._extractIDs(fixture), ['7febcd0b3806fbc48c01d7cea4ed1219', '7febcd0b3806fbc48c01d7cea4ed1218', '7febcd0b3806fbc48c01d7cea4ed1217']);
 });

@@ -8,7 +8,7 @@ class Subsume {
 	}
 
 	static parseAll(str, ids) {
-		if (ids && ids.constructor !== Array) {
+		if (ids && !Array.isArray(ids)) {
 			throw new TypeError('IDs is supposed to be an array');
 		}
 		const result = {data: new Map(), rest: str};
@@ -40,21 +40,22 @@ class Subsume {
 		} catch (err) {
 			throw new Error(`Could not extract IDs because the string's integrity is compromised: ${err.message}`);
 		}
-		const idRegex = /@@\[(.{32})\]@@.*##\[(\1)\]##/g;
+		const idRegex = /@@\[(.{32})\]@@.*##\[\1\]##/g;
 		const idList = [];
 		let match;
 
 		do {
 			match = idRegex.exec(str);
-			if (match && match[1] === match[2]) {
-				idList.push(match[1]);
+			if (match) {
+				const [, id] = match;
+				idList.push(id);
 			}
 		} while (match);
 		return idList;
 	}
 
 	static _checkIntegrity(str) {
-		const delimiterRegex = /([#|@])(?:\1)\[(.{32})\](?:\1){2}/g;
+		const delimiterRegex = /([#|@])\1\[(.{32})\]\1{2}/g;
 		const ids = new Map();
 		const idStack = [];
 		let match;
