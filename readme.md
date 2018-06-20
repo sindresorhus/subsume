@@ -8,7 +8,7 @@ Can for example be useful when you run a child process that has multiple entitie
 ## Install
 
 ```
-$ npm install --save subsume
+$ npm install subsume
 ```
 
 
@@ -25,15 +25,15 @@ console.log(subsume.id);
 const text = subsume.compose('🦄');
 //=> '@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]##'
 
-// the text can now be embedded in some other text
+// The text can now be embedded in some other text
 const output = `some${text} random text`;
 //=> 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random text'
 
-// at a later point we extract it
+// At a later point we extract it
 subsume.parse(output);
 //=> {data: '🦄', rest: 'some random text'}
 
-// or in a different process by using the `id`
+// Or in a different process by using the `id`
 const input = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random text';
 Subsume.parse(text, '7febcd0b3806fbc48c01d7cea4ed1219');
 //=> {data: '🦄', rest: 'some random text'}
@@ -103,9 +103,9 @@ Useful when `text` comes from an external source.
 
 ### Subsume.parseAll(text[, idArray])
 
-Extract embedded data corresponding to all ids in `idArray`, if specified. Otherwise it will extract embedded data for all top-level ids.
+Extract embedded data corresponding to all IDs in `idArray`, if specified. Otherwise it will extract embedded data for all top-level IDs.
 
-Returns an object with properties `.data`, a Map with an entry for each parsed id, and `.rest` for what remains after all the required ids have been parsed, as seen below:
+Returns an object with properties `.data`, a Map with an entry for each parsed ID, and `.rest` for what remains after all the required IDs have been parsed, as seen below:
 
 The input:
 
@@ -113,16 +113,19 @@ The input:
 some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random@@[7febcd0b3806fbc48c01d7cea4ed1218]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1218]## text@@[7febcd0b3806fbc48c01d7cea4ed1217]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1217]##
 ```
 
-Gives the followinf output:
+Gives the following output:
 
 ```
-{ data:
-   Map {
-     '7febcd0b3806fbc48c01d7cea4ed1219' => '🦄',
-     '7febcd0b3806fbc48c01d7cea4ed1218' => '🦄',
-     '7febcd0b3806fbc48c01d7cea4ed1217' => '🦄' },
-  rest: 'some random text' }
+{
+	data: Map {
+		'7febcd0b3806fbc48c01d7cea4ed1219' => '🦄',
+		'7febcd0b3806fbc48c01d7cea4ed1218' => '🦄',
+		'7febcd0b3806fbc48c01d7cea4ed1217' => '🦄'
+	},
+	rest: 'some random text'
+}
 ```
+
 
 ## License
 

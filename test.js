@@ -1,5 +1,5 @@
 import test from 'ava';
-import Subsume from './';
+import Subsume from '.';
 
 test('new Subsume()', t => {
 	const subsume = new Subsume();
