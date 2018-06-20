@@ -44,3 +44,39 @@ test('Subsume#parse()', t => {
 		rest: 'some random text'
 	});
 });
+
+test('Subsume#_checkIntegrity()', t => {
+	const fixture1 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random text';
+	const fixture2 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]####[7febcd0b3806fbc48c01d7cea4ed1219]## random text';
+	const fixture3 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random @@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]##text';
+	const fixture4 = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random @@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄text';
+
+	const map = new Map();
+	map.set('7febcd0b3806fbc48c01d7cea4ed1219', new Map());
+
+	t.deepEqual(Subsume._checkIntegrity(fixture1), map);
+
+	map.get('7febcd0b3806fbc48c01d7cea4ed1219').set('7febcd0b3806fbc48c01d7cea4ed1219', new Map());
+	t.deepEqual(Subsume._checkIntegrity(fixture2), map);
+
+	t.throws(() => Subsume._checkIntegrity(fixture3));
+	t.throws(() => Subsume._checkIntegrity(fixture4));
+});
+
+test('Subsume#_extractIDs()', t => {
+	const fixture = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]####[7febcd0b3806fbc48c01d7cea4ed1219]## random@@[7febcd0b3806fbc48c01d7cea4ed1218]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1218]## text@@[7febcd0b3806fbc48c01d7cea4ed1217]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1217]##';
+	t.deepEqual(Subsume._extractIDs(fixture), ['7febcd0b3806fbc48c01d7cea4ed1219', '7febcd0b3806fbc48c01d7cea4ed1218', '7febcd0b3806fbc48c01d7cea4ed1217']);
+});
+
+test('Subsume#parseAll()', t => {
+	const map = new Map();
+	map.set('7febcd0b3806fbc48c01d7cea4ed1219', '🦄@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]##');
+	map.set('7febcd0b3806fbc48c01d7cea4ed1218', '🦄');
+	map.set('7febcd0b3806fbc48c01d7cea4ed1217', '🦄');
+
+	const fixture = 'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]####[7febcd0b3806fbc48c01d7cea4ed1219]## random@@[7febcd0b3806fbc48c01d7cea4ed1218]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1218]## text@@[7febcd0b3806fbc48c01d7cea4ed1217]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1217]##';
+	t.deepEqual(Subsume.parseAll(fixture), {data: map, rest: 'some random text'});
+
+	map.delete('7febcd0b3806fbc48c01d7cea4ed1217');
+	t.deepEqual(Subsume.parseAll(fixture, ['7febcd0b3806fbc48c01d7cea4ed1219', '7febcd0b3806fbc48c01d7cea4ed1218']), {data: map, rest: 'some random text@@[7febcd0b3806fbc48c01d7cea4ed1217]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1217]##'});
+});
