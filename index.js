@@ -75,9 +75,11 @@ class Subsume {
 					for (const el of idStack) {
 						map = map.get(el);
 					}
+
 					if (map.get(id)) {
 						throw new Error('There are duplicate IDs in the same scope.');
 					}
+
 					map.set(id, new Map());
 
 					idStack.push(id);
