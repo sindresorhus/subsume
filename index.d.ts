@@ -16,7 +16,7 @@ declare class Subsume {
 
 	Useful when `text` comes from an external source.
 	*/
-	static parse(text: string, id: string): Subsume.ParseResult;
+	static parse(string: string, id: string): Subsume.ParseResult;
 
 	/**
 	Extract embedded data corresponding to all IDs in `idArray`, if specified. Otherwise it will extract embedded data for all top-level IDs.
@@ -42,7 +42,7 @@ declare class Subsume {
 	}
 	```
 	*/
-	static parseAll(text: string, idArray?: string[]): Subsume.ParseResults;
+	static parseAll(string: string, idArray?: readonly string[]): Subsume.ParseResults;
 
 	/**
 	Used identifier.
@@ -100,14 +100,14 @@ declare class Subsume {
 	/**
 	@returns A wrapped version of `text` that you can embed in other content.
 	*/
-	compose(text: string): string;
+	compose(string: string): string;
 
 	/**
 	Extract your embedded data from `text`.
 
-	@returns an object with properties `.data` for your embedded data and `.rest` for everything else.
+	@returns An object with properties `.data` for your embedded data and `.rest` for everything else.
 	*/
-	parse(text: string): Subsume.ParseResult;
+	parse(string: string): Subsume.ParseResult;
 }
 
 export = Subsume;

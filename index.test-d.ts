@@ -15,10 +15,10 @@ expectType<string>(text);
 
 const output = `some${text} random text`;
 
-const res = subsume.parse(output);
-expectType<ParseResult>(res);
-expectType<string | undefined>(res.data);
-expectType<string>(res.rest);
+const result = subsume.parse(output);
+expectType<ParseResult>(result);
+expectType<string | undefined>(result.data);
+expectType<string>(result.rest);
 
 const input =
 	'some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed1219]## random text';

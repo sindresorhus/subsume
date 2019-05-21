@@ -101,7 +101,7 @@ Extract embedded data with a specific `id` out of `text`.
 
 Useful when `text` comes from an external source.
 
-### Subsume.parseAll(text[, idArray])
+### Subsume.parseAll(text, [idArray])
 
 Extract embedded data corresponding to all IDs in `idArray`, if specified. Otherwise it will extract embedded data for all top-level IDs.
 
