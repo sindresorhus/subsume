@@ -1,4 +1,4 @@
-# subsume [![Build Status](https://travis-ci.org/sindresorhus/subsume.svg?branch=master)](https://travis-ci.org/sindresorhus/subsume)
+# subsume
 
 > Embed data in other data and easily extract it when needed
 
