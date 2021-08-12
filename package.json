@@ -1,6 +1,6 @@
 {
 	"name": "subsume",
-	"version": "3.0.0",
+	"version": "4.0.0",
 	"description": "Embed data in other data and easily extract it when needed",
 	"license": "MIT",
 	"repository": "sindresorhus/subsume",
