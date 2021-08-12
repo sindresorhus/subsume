@@ -4,13 +4,16 @@
 	"description": "Embed data in other data and easily extract it when needed",
 	"license": "MIT",
 	"repository": "sindresorhus/subsume",
+	"funding": "https://github.com/sponsors/sindresorhus",
 	"author": {
 		"name": "Sindre Sorhus",
 		"email": "sindresorhus@gmail.com",
-		"url": "sindresorhus.com"
+		"url": "https://sindresorhus.com"
 	},
+	"type": "module",
+	"exports": "./index.js",
 	"engines": {
-		"node": ">=8"
+		"node": "^12.20.0 || ^14.13.1 || >=16.0.0"
 	},
 	"scripts": {
 		"test": "xo && ava && tsd"
@@ -36,12 +39,12 @@
 		"decode"
 	],
 	"dependencies": {
-		"escape-string-regexp": "^2.0.0",
-		"unique-string": "^2.0.0"
+		"escape-string-regexp": "^5.0.0",
+		"unique-string": "^3.0.0"
 	},
 	"devDependencies": {
-		"ava": "^1.4.1",
-		"tsd": "^0.7.3",
-		"xo": "^0.24.0"
+		"ava": "^3.15.0",
+		"tsd": "^0.17.0",
+		"xo": "^0.44.0"
 	}
 }

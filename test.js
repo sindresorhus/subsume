@@ -1,5 +1,5 @@
 import test from 'ava';
-import Subsume from '.';
+import Subsume from './index.js';
 
 test('new Subsume()', t => {
 	const subsume = new Subsume();
@@ -24,7 +24,7 @@ test('Subsume.parse()', t => {
 
 	t.deepEqual(Subsume.parse(fixture, id), {
 		data: '🦄',
-		rest: 'some random text'
+		rest: 'some random text',
 	});
 });
 
@@ -41,7 +41,7 @@ test('Subsume#parse()', t => {
 
 	t.deepEqual(subsume.parse(fixture), {
 		data: '🦄',
-		rest: 'some random text'
+		rest: 'some random text',
 	});
 });
 
@@ -59,8 +59,13 @@ test('Subsume#_checkIntegrity()', t => {
 	map.get('7febcd0b3806fbc48c01d7cea4ed1219').set('7febcd0b3806fbc48c01d7cea4ed1219', new Map());
 	t.deepEqual(Subsume._checkIntegrity(fixture2), map);
 
-	t.throws(() => Subsume._checkIntegrity(fixture3));
-	t.throws(() => Subsume._checkIntegrity(fixture4));
+	t.throws(() => {
+		Subsume._checkIntegrity(fixture3);
+	});
+
+	t.throws(() => {
+		Subsume._checkIntegrity(fixture4);
+	});
 });
 
 test('Subsume#_extractIDs()', t => {

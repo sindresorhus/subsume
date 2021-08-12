@@ -4,18 +4,16 @@
 
 Can for example be useful when you run a child process that has multiple entities writing to stdout and you want to handle those outputs differently. I personally use it in [`run-jxa`](https://github.com/sindresorhus/run-jxa) to allow the code run in that context to use `console.log`, but also allow me to send the result of the execution back through `console.log`.
 
-
 ## Install
 
 ```
 $ npm install subsume
 ```
 
-
 ## Usage
 
 ```js
-const Subsume = require('subsume');
+import Subsume from 'subsume';
 
 const subsume = new Subsume();
 
@@ -39,16 +37,15 @@ Subsume.parse(text, '7febcd0b3806fbc48c01d7cea4ed1219');
 //=> {data: '🦄', rest: 'some random text'}
 ```
 
-
 ## API
 
-### new Subsume([id])
+### `subsume = new Subsume(id?)`
 
-Returns a new `subsume` instance.
+Returns a new instance.
 
 #### id
 
-Type: `string`<br>
+Type: `string`\
 Default: Unique ID
 
 You probably don't need to set this. Can be useful if you need a stable ID.
@@ -75,7 +72,7 @@ Returns an object with properties `.data` for your embedded data and `.rest` for
 
 Type: `string`
 
-Used identifier.
+The used identifier.
 
 #### prefix
 
@@ -101,7 +98,7 @@ Extract embedded data with a specific `id` out of `text`.
 
 Useful when `text` comes from an external source.
 
-### Subsume.parseAll(text, [idArray])
+### Subsume.parseAll(text, idArray?)
 
 Extract embedded data corresponding to all IDs in `idArray`, if specified. Otherwise it will extract embedded data for all top-level IDs.
 
@@ -115,7 +112,7 @@ some@@[7febcd0b3806fbc48c01d7cea4ed1219]@@🦄##[7febcd0b3806fbc48c01d7cea4ed121
 
 Gives the following output:
 
-```
+```js
 {
 	data: Map {
 		'7febcd0b3806fbc48c01d7cea4ed1219' => '🦄',
@@ -125,8 +122,3 @@ Gives the following output:
 	rest: 'some random text'
 }
 ```
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)

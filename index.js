@@ -1,8 +1,7 @@
-'use strict';
-const uniqueString = require('unique-string');
-const escapeStringRegexp = require('escape-string-regexp');
+import uniqueString from 'unique-string';
+import escapeStringRegexp from 'escape-string-regexp';
 
-class Subsume {
+export default class Subsume {
 	static parse(text, id) {
 		return (new Subsume(id)).parse(text);
 	}
@@ -28,9 +27,9 @@ class Subsume {
 				throw new Error('IDs aren\'t supposed to be repeated at the same level in a string');
 			}
 
-			const res = Subsume.parse(result.rest, id);
-			result.data.set(id, res.data);
-			result.rest = res.rest;
+			const parseResult = Subsume.parse(result.rest, id);
+			result.data.set(id, parseResult.data);
+			result.rest = parseResult.rest;
 		}
 
 		return result;
@@ -43,7 +42,7 @@ class Subsume {
 			throw new Error(`Could not extract IDs because the string's integrity is compromised: ${error.message}`);
 		}
 
-		const idRegex = /@@\[(.{32})\]@@.*##\[\1\]##/g;
+		const idRegex = /@@\[(.{32})]@@.*##\[\1]##/g;
 		const idList = [];
 		let match;
 
@@ -59,7 +58,7 @@ class Subsume {
 	}
 
 	static _checkIntegrity(text) {
-		const delimiterRegex = /([#|@])\1\[(.{32})\]\1{2}/g;
+		const delimiterRegex = /([#|@])\1\[(.{32})]\1{2}/g;
 		const ids = new Map();
 		const idStack = [];
 		let match;
@@ -72,8 +71,8 @@ class Subsume {
 
 				if (embedToken === '@') {
 					let map = ids;
-					for (const el of idStack) {
-						map = map.get(el);
+					for (const element of idStack) {
+						map = map.get(element);
 					}
 
 					if (map.get(id)) {
@@ -89,7 +88,7 @@ class Subsume {
 			}
 		} while (match);
 
-		if (idStack.length !== 0) {
+		if (idStack.length > 0) {
 			throw new Error('There is a mismatch between prefixes and suffixes');
 		}
 
@@ -118,18 +117,16 @@ class Subsume {
 			throw new Error(`Could not extract IDs because the string's integrity is compromised: ${error.message}`);
 		}
 
-		const ret = {};
+		const returnValue = {};
 
-		ret.rest = text.replace(this.regex, (m, p1) => {
+		returnValue.rest = text.replace(this.regex, (m, p1) => {
 			if (p1) {
-				ret.data = p1;
+				returnValue.data = p1;
 			}
 
 			return '';
 		});
 
-		return ret;
+		return returnValue;
 	}
 }
-
-module.exports = Subsume;

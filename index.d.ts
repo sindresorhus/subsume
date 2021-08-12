@@ -1,22 +1,22 @@
-declare namespace Subsume {
-	interface ParseResult {
-		data?: string;
-		rest: string;
-	}
+/* eslint-disable @typescript-eslint/member-ordering */
 
-	interface ParseResults {
-		data: Map<string, string>;
-		rest: string;
-	}
+export interface ParseResult {
+	data?: string;
+	rest: string;
 }
 
-declare class Subsume {
+export interface ParseResults {
+	data: Map<string, string>;
+	rest: string;
+}
+
+export default class Subsume {
 	/**
 	Extract embedded data with a specific `id` out of `text`.
 
 	Useful when `text` comes from an external source.
 	*/
-	static parse(string: string, id: string): Subsume.ParseResult;
+	static parse(string: string, id: string): ParseResult;
 
 	/**
 	Extract embedded data corresponding to all IDs in `idArray`, if specified. Otherwise it will extract embedded data for all top-level IDs.
@@ -42,27 +42,27 @@ declare class Subsume {
 	}
 	```
 	*/
-	static parseAll(string: string, idArray?: readonly string[]): Subsume.ParseResults;
+	static parseAll(string: string, idArray?: readonly string[]): ParseResults;
 
 	/**
 	Used identifier.
 	*/
-	id: string;
+	readonly id: string;
 
 	/**
 	Prefix used in `.compose()`.
 	*/
-	prefix: string;
+	readonly prefix: string;
 
 	/**
 	Postfix used in `.compose()`.
 	*/
-	postfix: string;
+	readonly postfix: string;
 
 	/**
 	Regex used in `.parse()`.
 	*/
-	regex: RegExp;
+	readonly regex: RegExp;
 
 	/**
 	Embed data in other data and easily extract it when needed.
@@ -71,7 +71,7 @@ declare class Subsume {
 
 	@example
 	```
-	import Subsume = require('subsume');
+	import Subsume from 'subsume';
 
 	const subsume = new Subsume();
 
@@ -107,7 +107,5 @@ declare class Subsume {
 
 	@returns An object with properties `.data` for your embedded data and `.rest` for everything else.
 	*/
-	parse(string: string): Subsume.ParseResult;
+	parse(string: string): ParseResult;
 }
-
-export = Subsume;
